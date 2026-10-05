@@ -1,16 +1,12 @@
 # Multi-Cloud Security Misconfiguration Analysis
 
-My final-year dissertation examined a practical question: when the same security mistake is made across different cloud platforms, how reliably do their native tools identify it?
+A practical comparison of storage, identity and network misconfigurations across **AWS, Microsoft Azure, Google Cloud, Oracle Cloud Infrastructure and IBM Cloud**.
 
-I built controlled test environments across **AWS, Microsoft Azure, Google Cloud, Oracle Cloud Infrastructure and IBM Cloud**, introduced three types of misconfiguration, reviewed the available security findings, and applied remediation. The comparison focused on the free-tier and trial services available during the project.
-
-## Project poster
-
-[Download the project poster (PowerPoint)](docs/Cloud-Security-Poster.pptx)
+Controlled tests covered public storage, excessive permissions and unrestricted SSH access. Each scenario was checked using the available native security tools, remediated and reviewed again. Testing used free-tier and trial services.
 
 ## Scope
 
-| Risk | What I examined | Remediation |
+| Risk | Configuration tested | Remediation |
 | --- | --- | --- |
 | Public storage exposure | Storage permissions that allowed unintended public access | Remove public access and review storage permissions |
 | Excessive IAM privileges | Users, groups or roles with broader access than required | Reduce permissions in line with least privilege |
@@ -18,7 +14,7 @@ I built controlled test environments across **AWS, Microsoft Azure, Google Cloud
 
 ## Investigation workflow
 
-The same risk categories were assessed in five separate environments. This diagram shows the investigation process, rather than a connected multi-cloud architecture.
+Each provider was tested separately using the same three risk categories.
 
 ```mermaid
 flowchart TB
@@ -67,7 +63,7 @@ flowchart TB
 
 ## Findings
 
-These qualitative ratings reproduce the comparison in Table 6.1 of my dissertation. They describe the configured environments and observation periods used in this project, rather than the full capabilities of each provider.
+Results from the tested environments. Ratings reflect the services enabled and the observation periods used.
 
 | Provider | Storage detection | IAM detection | Network detection | Overall visibility |
 | --- | --- | --- | --- | --- |
@@ -77,24 +73,43 @@ These qualitative ratings reproduce the comparison in Table 6.1 of my dissertati
 | Oracle Cloud Infrastructure | Limited | Limited | Limited | Weak |
 | IBM Cloud | Limited | Limited | Limited | Weak |
 
-Google Cloud provided the clearest overall visibility in my tests. AWS showed strong storage exposure detection through IAM Access Analyzer. Azure findings sometimes depended on delayed posture assessments, while OCI and IBM Cloud required more manual configuration review in the tested environments.
+Google Cloud provided the clearest overall visibility during testing. AWS showed strong storage exposure detection through IAM Access Analyzer. Azure findings sometimes depended on delayed posture assessments, while OCI and IBM Cloud required more manual configuration review in the tested environments.
 
-The main lesson was that an insecure setting and a visible security alert are separate things. A dashboard without findings did not establish that the configuration was secure. Reviewing the underlying permissions and network rules remained essential.
+## Console evidence
 
-## My contribution
+AWS console screenshots captured during testing.
 
-- Designed comparable storage, identity and network scenarios across five providers.
-- Recorded baseline configurations, intentional misconfigurations and available security findings.
-- Compared detection visibility, reporting clarity and remediation guidance.
-- Removed public access, reduced excessive permissions and restricted network exposure.
-- Documented the before-and-after evidence and limitations in a technical dissertation.
+### Public storage detected
+
+IAM Access Analyzer for S3 reported one bucket with public read access.
+
+![S3 public access finding](screenshots/s3-exposure-detected.jpg)
+
+### Public access blocked after remediation
+
+Block Public Access was switched on, with all four individual settings enabled.
+
+![S3 Block Public Access enabled](screenshots/s3-public-access-blocked.jpg)
+
+<details>
+<summary><strong>IAM permissions after remediation</strong></summary>
+
+The test user's AdministratorAccess policy was replaced with ReadOnlyAccess. This reduced access, although the AWS-managed policy remains broader than a policy scoped to specific resources.
+
+![IAM ReadOnlyAccess policy](screenshots/iam-reduced-permissions.jpg)
+
+</details>
+
+<details>
+<summary><strong>Unrestricted SSH rule during testing</strong></summary>
+
+The test security group allowed TCP port 22 from `0.0.0.0/0`. This captures the intentional misconfiguration before remediation.
+
+![SSH rule allowing any IPv4 source](screenshots/ssh-open-rule.jpg)
+
+</details>
 
 ## Limits of the comparison
 
 Free-tier and trial access restricted some advanced security features. Environments were functionally comparable, but provider architectures and configurations differed. Background scan timing and enabled integrations also affected which findings appeared. An absent finding during a test does not mean a provider cannot detect that risk.
 
-## Academic context
-
-**Dissertation:** Investigating and Mitigating Cloud Security Vulnerabilities Across Multiple Cloud Platforms  
-**Degree:** BEng (Hons) Computer Networking & Cloud Security, London Metropolitan University  
-**Author:** Diame Edoburun
