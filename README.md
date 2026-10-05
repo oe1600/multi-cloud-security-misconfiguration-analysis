@@ -4,6 +4,10 @@ My final-year dissertation examined a practical question: when the same security
 
 I built controlled test environments across **AWS, Microsoft Azure, Google Cloud, Oracle Cloud Infrastructure and IBM Cloud**, introduced three types of misconfiguration, reviewed the available security findings, and applied remediation. The comparison focused on the free-tier and trial services available during the project.
 
+## Project poster
+
+[Download the project poster (PowerPoint)](docs/Cloud-Security-Poster.pptx)
+
 ## Scope
 
 | Risk | What I examined | Remediation |
